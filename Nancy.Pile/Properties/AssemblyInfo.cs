@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Nancy.Pile")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A Super Simple Asset Bundler for NancyFx")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Mike Ward")]
 [assembly: AssemblyProduct("Nancy.Pile")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
