@@ -117,7 +117,7 @@ namespace Nancy.Pile
         }
     }
 
-    public static class StaticContentBundleConventionBuilder
+    public static class BundleConventionBuilder
     {
         public static Func<NancyContext, string, Response> AddBundle(string bundlePath, string contentType,
             Bundle.CompressionType compressionType, IEnumerable<string> files)
@@ -167,7 +167,7 @@ namespace Nancy.Pile
         }
     }
 
-    public static class StaticContentBundleConventionsExtensions
+    public static class BundleConventionsExtensions
     {
         public static void AddStylesBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             bool compress, IEnumerable<string> files)
@@ -186,7 +186,7 @@ namespace Nancy.Pile
         public static void AddBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
             Bundle.CompressionType compressionType, IEnumerable<string> files)
         {
-            conventions.Add(StaticContentBundleConventionBuilder.AddBundle(requestedPath, contentType, compressionType, files));
+            conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, compressionType, files));
         }
     }
 }
