@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy.Pile", "Nancy.Pile\Nancy.Pile.csproj", "{C95E6431-87FF-45F2-8217-AB9CEDC3AD32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy.Pile.Sample", "Nancy.Pile.Sample\Nancy.Pile.Sample.csproj", "{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C95E6431-87FF-45F2-8217-AB9CEDC3AD32} = {C95E6431-87FF-45F2-8217-AB9CEDC3AD32}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C95E6431-87FF-45F2-8217-AB9CEDC3AD32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C95E6431-87FF-45F2-8217-AB9CEDC3AD32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C95E6431-87FF-45F2-8217-AB9CEDC3AD32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C95E6431-87FF-45F2-8217-AB9CEDC3AD32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
