@@ -1,7 +1,7 @@
 Nancy.Pile
 ==========
 
-Takes a pile of files and concatonates them into a single resource.  It's a super simple asset bundler for NancyFx.
+Takes a pile of files and concatenates them into a single resource.  It's a super simple asset bundler for NancyFx.
 
 ## Features ##
 
@@ -24,7 +24,7 @@ Uncompressed bundles insert comment with file name for each file for easier debu
 PM> Install-Package Nancy.Pile
 ```
 
-or just copy the `Bundle.cs` from the source repository and `PM> Install-Package AjaxMin`
+or just copy the `Bundle.cs` file from the source repository and `PM> Install-Package AjaxMin`
 
 ## Example Usage ##
 
@@ -55,7 +55,7 @@ Update your bootstrapper.
     }
 ```
 
-And in reference the bundles in html
+And reference the bundles in html
 
 ```HTML
 <html lang="en">
