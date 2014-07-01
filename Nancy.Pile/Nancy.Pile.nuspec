@@ -12,6 +12,6 @@
     <description>$description$</description>
     <releaseNotes>Initial Release</releaseNotes>
     <copyright>Copyright 2014, Mike Ward</copyright>
-    <tags>NancyFx></tags>
+    <tags>NancyFx</tags>
   </metadata>
 </package>
