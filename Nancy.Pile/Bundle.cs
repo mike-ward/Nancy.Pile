@@ -106,15 +106,6 @@ namespace Nancy.Pile
             md5.Dispose();
             return "\"" + BitConverter.ToString(hash).Replace("-", "") + "\"";
         }
-
-        public static bool IsDebugMode
-        {
-#if DEBUG
-            get { return true; }
-#else
-            get { return false; }
-#endif
-        }
     }
 
     public static class BundleConventionBuilder
@@ -169,21 +160,42 @@ namespace Nancy.Pile
 
     public static class BundleConventionsExtensions
     {
-        public static void AddStylesBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
+        public static bool UseCompression
+        {
+            #if DEBUG
+            get { return false; }
+            #else
+            get { return true; }
+            #endif
+        }
+
+        public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
+            IEnumerable<string> files)
+        {
+            conventions.StyleBundle(requestedPath, UseCompression, files);
+        }
+
+        public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             bool compress, IEnumerable<string> files)
         {
             var compression = compress ? Bundle.CompressionType.StyleSheet : Bundle.CompressionType.None;
             conventions.AddBundle(requestedPath, "text/css", compression, files);
         }
 
-        public static void AddScriptsBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
+        public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
+            IEnumerable<string> files)
+        {
+            conventions.ScriptBundle(requestedPath, UseCompression, files);
+        }
+
+        public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             bool compress, IEnumerable<string> files)
         {
             var compression = compress ? Bundle.CompressionType.JavaScript : Bundle.CompressionType.None;
             conventions.AddBundle(requestedPath, "application/x-javascript", compression, files);
         }
 
-        public static void AddBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
+        private static void AddBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
             Bundle.CompressionType compressionType, IEnumerable<string> files)
         {
             conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, compressionType, files));

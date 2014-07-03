@@ -10,14 +10,14 @@ namespace Nancy.Pile.Sample
         {
             base.ConfigureConventions(nancyConventions);
 
-            nancyConventions.StaticContentsConventions.AddStylesBundle("styles.css", !Bundle.IsDebugMode,
+            nancyConventions.StaticContentsConventions.StyleBundle("styles.css",
                 new[]
                 {
                     "css/pure.css",
                     "css/*.css"
                 });
 
-            nancyConventions.StaticContentsConventions.AddScriptsBundle("scripts.js", !Bundle.IsDebugMode,
+            nancyConventions.StaticContentsConventions.ScriptBundle("scripts.js",
                 new[]
                 {
                     "js/third-party/*.js",
