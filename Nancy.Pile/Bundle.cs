@@ -80,8 +80,8 @@ namespace Nancy.Pile
         private static string BuildText(string path, CompressionType compressionType)
         {
             var text = File.ReadAllText(path);
+            text = string.Format("\n/* {0} */\n{1}", path, text);
             if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
-            text = string.Format("/* {0} */\n{1}", path, text);
             if (compressionType == CompressionType.StyleSheet) return MinifyStyleSheet(text);
             if (compressionType == CompressionType.JavaScript) return MinifyJavaScript(text);
             return text;
@@ -89,14 +89,14 @@ namespace Nancy.Pile
 
         private static string MinifyStyleSheet(string text)
         {
-            var minifier = new Minifier();
-            return minifier.MinifyStyleSheet(text);
+            var minifier = TinyIoc.TinyIoCContainer.Current.Resolve<IMinifyStyleSheet>();
+            return minifier.Minify(text);
         }
 
         private static string MinifyJavaScript(string text)
         {
-            var minifier = new Minifier();
-            return minifier.MinifyJavaScript(text);
+            var minifier = TinyIoc.TinyIoCContainer.Current.Resolve<IMinifyJavaScript>();
+            return minifier.Minify(text);
         }
 
         private static string ComputeHash(byte[] bytes)
@@ -160,14 +160,12 @@ namespace Nancy.Pile
 
     public static class BundleConventionsExtensions
     {
-        public static bool UseCompression
-        {
+        private const bool UseCompression =
             #if DEBUG
-            get { return false; }
+                false;
             #else
-            get { return true; }
+                true;
             #endif
-        }
 
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
@@ -199,6 +197,34 @@ namespace Nancy.Pile
             Bundle.CompressionType compressionType, IEnumerable<string> files)
         {
             conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, compressionType, files));
+        }
+    }
+
+    public interface IMinifyStyleSheet
+    {
+        string Minify(string text);
+    }
+
+    public interface IMinifyJavaScript
+    {
+        string Minify(string text);
+    }
+
+    public class MinifyStyleSheet : IMinifyStyleSheet
+    {
+        public string Minify(string text)
+        {
+            var minifier = new Minifier();
+            return minifier.MinifyStyleSheet(text);     
+        }
+    }
+
+    public class MinifyJavaScript : IMinifyJavaScript
+    {
+        public string Minify(string text)
+        {
+            var minifier = new Minifier();
+            return minifier.MinifyJavaScript(text);
         }
     }
 }
