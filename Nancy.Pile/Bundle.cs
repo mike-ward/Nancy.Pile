@@ -89,14 +89,14 @@ namespace Nancy.Pile
 
         private static string MinifyStyleSheet(string text)
         {
-            var minifier = TinyIoc.TinyIoCContainer.Current.Resolve<IMinifyStyleSheet>();
-            return minifier.Minify(text);
+            var minifier = new Minifier();
+            return minifier.MinifyStyleSheet(text);
         }
 
         private static string MinifyJavaScript(string text)
         {
-            var minifier = TinyIoc.TinyIoCContainer.Current.Resolve<IMinifyJavaScript>();
-            return minifier.Minify(text);
+            var minifier = new Minifier();
+            return minifier.MinifyJavaScript(text);
         }
 
         private static string ComputeHash(byte[] bytes)
@@ -197,34 +197,6 @@ namespace Nancy.Pile
             Bundle.CompressionType compressionType, IEnumerable<string> files)
         {
             conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, compressionType, files));
-        }
-    }
-
-    public interface IMinifyStyleSheet
-    {
-        string Minify(string text);
-    }
-
-    public interface IMinifyJavaScript
-    {
-        string Minify(string text);
-    }
-
-    public class MinifyStyleSheet : IMinifyStyleSheet
-    {
-        public string Minify(string text)
-        {
-            var minifier = new Minifier();
-            return minifier.MinifyStyleSheet(text);     
-        }
-    }
-
-    public class MinifyJavaScript : IMinifyJavaScript
-    {
-        public string Minify(string text)
-        {
-            var minifier = new Minifier();
-            return minifier.MinifyJavaScript(text);
         }
     }
 }

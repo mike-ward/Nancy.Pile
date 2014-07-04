@@ -73,7 +73,6 @@ And reference the bundles in html
  
  * (Breaking) Rename AddStylesBundle, AddScriptsBundle to StyleBundle, ScriptBundle
  * Add overloads to StyleBundle, AddScriptBundle
- * Add interface for style/script compression
 
 - 0.1.0, 7/1/2014
 
