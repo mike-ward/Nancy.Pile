@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nancy.Testing;
@@ -9,23 +10,36 @@ namespace Nancy.Pile.Tests
     public class SampleTests
     {
         [TestMethod]
-        public void UnminifiedStyleSheetBundleShouldBeCorrectLength()
+        public void UnminifiedStyleSheetBundleShouldContainCorrectContent()
         {
             var bootstrapper = new Sample.Bootstrapper();
             var browser = new Browser(bootstrapper);
             var result = browser.Get("/styles.css", with => with.HttpRequest());
             result.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Body.ToArray().Length.Should().Be(35358);
+            var body = Encoding.UTF8.GetString(result.Body.ToArray());
+            body.Should().Contain("Pure v0.5.0");
         }
 
         [TestMethod]
-        public void UnminifiedScriptBundleShouldBeCorrectLength()
+        public void UnminifiedScriptBundleShouldContainCorrectContent()
         {
             var bootstrapper = new Sample.Bootstrapper();
             var browser = new Browser(bootstrapper);
             var result = browser.Get("/scripts.js", with => with.HttpRequest());
             result.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Body.ToArray().Length.Should().Be(133503);            
+            var body = Encoding.UTF8.GetString(result.Body.ToArray());
+            body.Should().Contain("angular.module('app', ['app.constants', 'app.controllers']);");
+        }
+
+        [TestMethod]
+        public void IndexPageShouldReturnOkStatus()
+        {
+            var bootstrapper = new Sample.Bootstrapper();
+            var browser = new Browser(bootstrapper);
+            var result = browser.Get("/", with => with.HttpRequest());
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            var body = Encoding.UTF8.GetString(result.Body.ToArray());
+            body.Should().Contain("This view was rendered using the Nancy Razor view engine");
         }
     }
 }
