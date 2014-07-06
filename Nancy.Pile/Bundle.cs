@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Web.Configuration;
 using Microsoft.Ajax.Utilities;
 using Nancy.Responses;
 
@@ -39,11 +41,11 @@ namespace Nancy.Pile
 
             var contents =
                 BuildFileList(files, applicationRootPath)
-                .Select(path => BuildText(path, minificationType));
+                    .Select(path => BuildText(path, minificationType));
 
             var bytes = Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents));
             var hash = ComputeHash(bytes);
-            AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle { ETag = hash, Bytes = bytes });
+            AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle {ETag = hash, Bytes = bytes});
             return hash.GetHashCode();
         }
 
@@ -160,7 +162,7 @@ namespace Nancy.Pile
                                 .Distinct()
                                 .Select(d =>
                                 {
-                                    var fw = new FileSystemWatcher(d) { IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite };
+                                    var fw = new FileSystemWatcher(d) {IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite};
                                     fw.Changed += (sender, args) => reset = true;
                                     fw.EnableRaisingEvents = true;
                                     return fw;
@@ -176,17 +178,19 @@ namespace Nancy.Pile
 
     public static class BundleConventionsExtensions
     {
-        private const bool Minify =
-            #if DEBUG
-                false;
-            #else
-                true;
-            #endif
+        private static bool IsRelease
+        {
+            get
+            {
+                var cfg = (CompilationSection)ConfigurationManager.GetSection("system.web/compilation");
+                return cfg == null || !cfg.Debug;
+            }
+        }
 
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
         {
-            conventions.StyleBundle(requestedPath, Minify, files);
+            conventions.StyleBundle(requestedPath, IsRelease, files);
         }
 
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
@@ -199,13 +203,13 @@ namespace Nancy.Pile
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
         {
-            conventions.ScriptBundle(requestedPath, Minify, files);
+            conventions.ScriptBundle(requestedPath, IsRelease, files);
         }
 
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
-            bool compress, IEnumerable<string> files)
+            bool minify, IEnumerable<string> files)
         {
-            var compression = compress ? Bundle.MinificationType.JavaScript : Bundle.MinificationType.None;
+            var compression = minify ? Bundle.MinificationType.JavaScript : Bundle.MinificationType.None;
             conventions.AddBundle(requestedPath, "application/x-javascript", compression, files);
         }
 

@@ -74,6 +74,9 @@ And reference the bundles in html (razor example)
 
 ## Release Notes
 
+- 0.3.1, 7/6/2014
+ * detect debug/release settings from web.config
+
 - 0.3.0, 7/6/2014
  * (Breaking) Change CompressionType enum to MinificationType enum
  * Exclude file specifications that start with "!"

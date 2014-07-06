@@ -10,7 +10,7 @@ namespace Nancy.Pile.Tests
     public class SampleTests
     {
         [TestMethod]
-        public void UnminifiedStyleSheetBundleShouldContainCorrectContent()
+        public void StyleSheetBundleShouldContainCorrectContent()
         {
             var bootstrapper = new Sample.Bootstrapper();
             var browser = new Browser(bootstrapper);
@@ -21,14 +21,14 @@ namespace Nancy.Pile.Tests
         }
 
         [TestMethod]
-        public void UnminifiedScriptBundleShouldContainCorrectContent()
+        public void ScriptBundleShouldContainCorrectContent()
         {
             var bootstrapper = new Sample.Bootstrapper();
             var browser = new Browser(bootstrapper);
             var result = browser.Get("/scripts.js");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             var body = Encoding.UTF8.GetString(result.Body.ToArray());
-            body.Should().Contain("angular.module('app', ['app.constants', 'app.controllers']);");
+            body.Should().Contain("angular.module(\"app\",[\"app.constants\",\"app.controllers\"])");
         }
 
         [TestMethod]
