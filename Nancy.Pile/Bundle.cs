@@ -13,7 +13,7 @@ namespace Nancy.Pile
 {
     public static class Bundle
     {
-        public enum CompressionType
+        public enum MinificationType
         {
             None,
             StyleSheet,
@@ -32,17 +32,14 @@ namespace Nancy.Pile
                 : ResponseFromBundle(bundle, contentType);
         }
 
-        public static int BuildAssetBundle(IEnumerable<string> files, CompressionType compressionType, string applicationRootPath)
+        public static int BuildAssetBundle(IEnumerable<string> files, MinificationType minificationType, string applicationRootPath)
         {
             if (files == null) throw new ArgumentNullException("files");
             if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
 
-            var contents = files
-                .Select(file => Path.Combine(applicationRootPath, file))
-                .Select(path => Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
-                .SelectMany(path => path)
-                .Distinct()
-                .Select(path => BuildText(path, compressionType));
+            var contents =
+                BuildFileList(files, applicationRootPath)
+                .Select(path => BuildText(path, minificationType));
 
             var bytes = Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents));
             var hash = ComputeHash(bytes);
@@ -77,13 +74,32 @@ namespace Nancy.Pile
             public byte[] Bytes { get; set; }
         }
 
-        private static string BuildText(string path, CompressionType compressionType)
+        public static IEnumerable<string> BuildFileList(IEnumerable<string> files, string applicationRootPath)
+        {
+            var excludedFiles = files
+                .Where(file => file.StartsWith("!"))
+                .Select(file => Path.Combine(applicationRootPath, file.Substring(1)))
+                .Select(path => Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
+                .SelectMany(path => path)
+                .Distinct();
+
+            var includedFiles = files
+                .Where(file => file.StartsWith("!") == false)
+                .Select(file => Path.Combine(applicationRootPath, file))
+                .Select(path => Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
+                .SelectMany(path => path)
+                .Distinct();
+
+            return includedFiles.Except(excludedFiles);
+        }
+
+        private static string BuildText(string path, MinificationType minificationType)
         {
             var text = File.ReadAllText(path);
             text = string.Format("\n/* {0} */\n{1}", path, text);
             if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
-            if (compressionType == CompressionType.StyleSheet) return MinifyStyleSheet(text);
-            if (compressionType == CompressionType.JavaScript) return MinifyJavaScript(text);
+            if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);
+            if (minificationType == MinificationType.JavaScript) return MinifyJavaScript(text);
             return text;
         }
 
@@ -111,7 +127,7 @@ namespace Nancy.Pile
     public static class BundleConventionBuilder
     {
         public static Func<NancyContext, string, Response> AddBundle(string bundlePath, string contentType,
-            Bundle.CompressionType compressionType, IEnumerable<string> files)
+            Bundle.MinificationType minificationType, IEnumerable<string> files)
         {
             var hash = 0;
             var reset = true;
@@ -132,13 +148,13 @@ namespace Nancy.Pile
 
                 if (reset)
                 {
-                    Interlocked.Exchange(ref hash, Bundle.BuildAssetBundle(files, compressionType, applicationRootPath));
+                    Interlocked.Exchange(ref hash, Bundle.BuildAssetBundle(files, minificationType, applicationRootPath));
                     reset = false;
                     lock (sync)
                     {
                         if (monitors == null)
                         {
-                            monitors = files
+                            monitors = Bundle.BuildFileList(files, applicationRootPath)
                                 .Select(f => Path.Combine(applicationRootPath, f))
                                 .Select(Path.GetDirectoryName)
                                 .Distinct()
@@ -160,7 +176,7 @@ namespace Nancy.Pile
 
     public static class BundleConventionsExtensions
     {
-        private const bool UseCompression =
+        private const bool Minify =
             #if DEBUG
                 false;
             #else
@@ -170,33 +186,33 @@ namespace Nancy.Pile
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
         {
-            conventions.StyleBundle(requestedPath, UseCompression, files);
+            conventions.StyleBundle(requestedPath, Minify, files);
         }
 
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             bool compress, IEnumerable<string> files)
         {
-            var compression = compress ? Bundle.CompressionType.StyleSheet : Bundle.CompressionType.None;
+            var compression = compress ? Bundle.MinificationType.StyleSheet : Bundle.MinificationType.None;
             conventions.AddBundle(requestedPath, "text/css", compression, files);
         }
 
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
         {
-            conventions.ScriptBundle(requestedPath, UseCompression, files);
+            conventions.ScriptBundle(requestedPath, Minify, files);
         }
 
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             bool compress, IEnumerable<string> files)
         {
-            var compression = compress ? Bundle.CompressionType.JavaScript : Bundle.CompressionType.None;
+            var compression = compress ? Bundle.MinificationType.JavaScript : Bundle.MinificationType.None;
             conventions.AddBundle(requestedPath, "application/x-javascript", compression, files);
         }
 
         private static void AddBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
-            Bundle.CompressionType compressionType, IEnumerable<string> files)
+            Bundle.MinificationType minificationType, IEnumerable<string> files)
         {
-            conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, compressionType, files));
+            conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, minificationType, files));
         }
     }
 }

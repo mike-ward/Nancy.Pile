@@ -9,7 +9,7 @@ namespace Nancy.Pile.Tests
         [TestMethod]
         public void BuildAssetShouldReturnHashCode()
         {
-            var hash = Bundle.BuildAssetBundle(new[] {"*.css"}, Bundle.CompressionType.None, ".");
+            var hash = Bundle.BuildAssetBundle(new[] {"*.css"}, Bundle.MinificationType.None, ".");
             hash.Should().Be(186375109);
         }
     }

@@ -12,6 +12,6 @@
     <description>$description$</description>
     <releaseNotes>(Breaking) Rename AddBundle methods</releaseNotes>
     <copyright>Copyright 2014, Mike Ward</copyright>
-    <tags>NancyFx</tags>
+    <tags>Nancy NancyFx</tags>
   </metadata>
 </package>
