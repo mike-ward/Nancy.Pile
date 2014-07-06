@@ -10,8 +10,7 @@
     <projectUrl>https://github.com/mike-ward/Nancy.Pile</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>(Breaking) Rename CompressionType enum to MinificationType enum.
-    Allow file exclude patterns</releaseNotes>
+    <releaseNotes>Use web.config compilation setting to determine minify/no minify setting</releaseNotes>
     <copyright>Copyright 2014, Mike Ward</copyright>
     <tags>Nancy NancyFx</tags>
   </metadata>

@@ -178,7 +178,7 @@ namespace Nancy.Pile
 
     public static class BundleConventionsExtensions
     {
-        private static bool IsRelease
+        private static bool Minify
         {
             get
             {
@@ -190,7 +190,7 @@ namespace Nancy.Pile
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
         {
-            conventions.StyleBundle(requestedPath, IsRelease, files);
+            conventions.StyleBundle(requestedPath, Minify, files);
         }
 
         public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
@@ -203,7 +203,7 @@ namespace Nancy.Pile
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
             IEnumerable<string> files)
         {
-            conventions.ScriptBundle(requestedPath, IsRelease, files);
+            conventions.ScriptBundle(requestedPath, Minify, files);
         }
 
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
