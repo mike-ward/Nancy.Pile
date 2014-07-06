@@ -35,7 +35,7 @@ namespace Nancy.Pile.Tests
         public void SecondRequestShouldReturnNotModified()
         {
             var browser = new Browser(new Sample.Bootstrapper());
-            var result = browser.Get("/scripts.js", with => with.HttpRequest());
+            var result = browser.Get("/scripts.js");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Headers["Cache-Control"].Should().Be("no-cache");
             var etag = result.Headers["ETag"];
