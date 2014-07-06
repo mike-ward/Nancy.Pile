@@ -13,9 +13,13 @@ Nuget package or include a single file in your current package.
 
 Detects when files change and invalidates cache.
 
-Wild card file matching with duplicate detection (useful when ordering matters)
+Wildcard characters with duplicate detection (useful when ordering matters)
 
-Uncompressed bundles insert comment with file name for each file for easier debugging.
+Excludes file(s) if first character is "!".
+
+Unminified bundles insert comment with file name for easier debugging.
+
+Overloaded bundle methods automatically minify on release builds only.
 
 
 ## Install
@@ -48,6 +52,7 @@ public class Bootstrapper : DefaultNancyBootstrapper
                new[]
                {
                    "js/third-party/*.js",
+                   "!js/third-party/bomb.js",
                    "js/app.js",
                    "js/app/*.js"
                });
@@ -55,7 +60,7 @@ public class Bootstrapper : DefaultNancyBootstrapper
    }
 ```
 
-And reference the bundles in html
+And reference the bundles in html (razor example)
 
 ```HTML
 <html lang="en">
@@ -68,6 +73,10 @@ And reference the bundles in html
 ```
 
 ## Release Notes
+
+- 0.3.0, 7/6/2014
+ * (Breaking) Change CompressionType enum to MinificationType enum
+ * Exclude file specifications that start with "!"
 
 - 0.2.0, 7/5/2014
  
