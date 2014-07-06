@@ -25,7 +25,7 @@ namespace Nancy.Pile.Tests
         {
             var bootstrapper = new Sample.Bootstrapper();
             var browser = new Browser(bootstrapper);
-            var result = browser.Get("/scripts.js", with => with.HttpRequest());
+            var result = browser.Get("/scripts.js");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             var body = Encoding.UTF8.GetString(result.Body.ToArray());
             body.Should().Contain("angular.module('app', ['app.constants', 'app.controllers']);");
@@ -39,13 +39,11 @@ namespace Nancy.Pile.Tests
             var result = browser.Get("/scripts.js", with => with.HttpRequest());
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             var etag = result.Headers["ETag"];
-            var result2 = browser.Get("/scripts.js",
-                with =>
-                {
-                    with.HttpRequest();
-                    with.Header("If-None-Match", etag);
-                });
+            etag.Should().NotBeNullOrWhiteSpace();
+            var result2 = browser.Get("/scripts.js", with => with.Header("If-None-Match", etag));
             result2.StatusCode.Should().Be(HttpStatusCode.NotModified);
+            result2.Headers["Cache-Control"].Should().Be("no-cache");
+            result2.Body.Count().Should().Be(0);
         }
 
         [TestMethod]
