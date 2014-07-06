@@ -32,6 +32,23 @@ namespace Nancy.Pile.Tests
         }
 
         [TestMethod]
+        public void SecondRequestShouldReturnNotModified()
+        {
+            var bootstrapper = new Sample.Bootstrapper();
+            var browser = new Browser(bootstrapper);
+            var result = browser.Get("/scripts.js", with => with.HttpRequest());
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            var etag = result.Headers["ETag"];
+            var result2 = browser.Get("/scripts.js",
+                with =>
+                {
+                    with.HttpRequest();
+                    with.Header("If-None-Match", etag);
+                });
+            result2.StatusCode.Should().Be(HttpStatusCode.NotModified);
+        }
+
+        [TestMethod]
         public void IndexPageShouldReturnOkStatus()
         {
             var bootstrapper = new Sample.Bootstrapper();
