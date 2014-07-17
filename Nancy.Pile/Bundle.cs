@@ -97,8 +97,10 @@ namespace Nancy.Pile
 
         private static string BuildText(string path, MinificationType minificationType)
         {
-            var text = File.ReadAllText(path);
-            text = string.Format("\n/* {0} */\n{1}", path, text);
+            var text = minificationType == MinificationType.None 
+                ? string.Format("\n/* {0} */\n", path) 
+                : string.Empty;
+            text += File.ReadAllText(path);
             if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
             if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);
             if (minificationType == MinificationType.JavaScript) return MinifyJavaScript(text);
