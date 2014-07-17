@@ -199,7 +199,7 @@ namespace Nancy.Pile
             bool compress, IEnumerable<string> files)
         {
             var compression = compress ? Bundle.MinificationType.StyleSheet : Bundle.MinificationType.None;
-            conventions.AddBundle(requestedPath, "text/css", compression, files);
+            conventions.AddBundle(requestedPath, "text/css;charset=utf-8", compression, files);
         }
 
         public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
@@ -212,7 +212,7 @@ namespace Nancy.Pile
             bool minify, IEnumerable<string> files)
         {
             var compression = minify ? Bundle.MinificationType.JavaScript : Bundle.MinificationType.None;
-            conventions.AddBundle(requestedPath, "application/x-javascript", compression, files);
+            conventions.AddBundle(requestedPath, "application/x-javascript;charset=utf-8", compression, files);
         }
 
         private static void AddBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
