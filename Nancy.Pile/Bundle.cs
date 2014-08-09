@@ -39,10 +39,7 @@ namespace Nancy.Pile
             if (files == null) throw new ArgumentNullException("files");
             if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
 
-            var contents =
-                BuildFileList(files, applicationRootPath)
-                    .Select(path => BuildText(path, minificationType));
-
+            var contents = BuildFileList(files, applicationRootPath).Select(path => BuildText(path, minificationType));
             var bytes = Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents));
             var hash = ComputeHash(bytes);
             AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle {ETag = hash, Bytes = bytes});
@@ -76,20 +73,22 @@ namespace Nancy.Pile
             public byte[] Bytes { get; set; }
         }
 
-        public static IEnumerable<string> BuildFileList(IEnumerable<string> files, string applicationRootPath)
+        public static IEnumerable<string> BuildFileList(IEnumerable<string> fileEntries, string applicationRootPath)
         {
+            var files = fileEntries as string[] ?? fileEntries.ToArray();
+
             var excludedFiles = files
                 .Where(file => file.StartsWith("!"))
                 .Select(file => Path.Combine(applicationRootPath, file.Substring(1)))
-                .Select(path => Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
-                .SelectMany(path => path)
+                .Select(path => Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
+                .SelectMany(path => path.ToArray())
                 .Distinct();
 
             var includedFiles = files
                 .Where(file => file.StartsWith("!") == false)
                 .Select(file => Path.Combine(applicationRootPath, file))
-                .Select(path => Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
-                .SelectMany(path => path)
+                .Select(path => Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
+                .SelectMany(path => path.ToArray())
                 .Distinct();
 
             return includedFiles.Except(excludedFiles);
@@ -97,8 +96,8 @@ namespace Nancy.Pile
 
         private static string BuildText(string path, MinificationType minificationType)
         {
-            var text = minificationType == MinificationType.None 
-                ? string.Format("\n/* {0} */\n", path) 
+            var text = minificationType == MinificationType.None
+                ? string.Format("\n/* {0} */\n", path)
                 : string.Empty;
             text += File.ReadAllText(path);
             if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
@@ -215,7 +214,7 @@ namespace Nancy.Pile
             conventions.AddBundle(requestedPath, "application/x-javascript;charset=utf-8", compression, files);
         }
 
-        private static void AddBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
+        private static void AddBundle(this ICollection<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
             Bundle.MinificationType minificationType, IEnumerable<string> files)
         {
             conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, minificationType, files));

@@ -10,8 +10,8 @@
     <projectUrl>https://github.com/mike-ward/Nancy.Pile</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Suppress file source comment for already minified resources.
-    Add charset=utf-8 to content type header</releaseNotes>
+    <iconUrl>http://nancyfx.org/nancy-nuget.png</iconUrl>
+    <releaseNotes>Use more efficient EnumerateFiles method</releaseNotes>
     <copyright>Copyright 2014, Mike Ward</copyright>
     <tags>Nancy NancyFx</tags>
   </metadata>

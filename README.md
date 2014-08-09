@@ -74,6 +74,10 @@ And reference the bundles in html (razor example)
 
 ## Release Notes
 
+- 0.3.3, 8/9/2014
+ * Use EnumerateFiles for slightly more efficient processing
+ * Add Nancy logo to nuget package
+
 - 0.3.2, 7/17/2014
  * Suppress file path comment for sources that are already minified
  * Add charset=utf-8 to content type response header
