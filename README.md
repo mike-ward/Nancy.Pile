@@ -7,20 +7,21 @@ Takes a pile of files and concatenates them into a single resource.  It's a supe
 
 Concats and minifies style sheets and javascript files.
 
-Won't minify files with ".min." in the file name.
+- Bundles AngularJS HTML Pages.
 
-Nuget package or include a single file in your current package.
+- Won't minify files with ".min." in the file name.
 
-Detects when files change and invalidates cache.
+- Nuget package or include a single file in your current package.
 
-Wildcard characters with duplicate detection (useful when ordering matters)
+- Detects when files change and invalidates cache.
 
-Excludes file(s) if first character is "!".
+- Wildcard characters with duplicate detection (useful when ordering matters)
 
-Unminified bundles insert comment with file name for easier debugging.
+- Excludes file(s) if first character is "!".
 
-Overloaded bundle methods automatically minify on release builds only.
+- Unminified bundles insert comment with file name for easier debugging.
 
+- Overloaded bundle methods automatically minify on release builds only.
 
 ## Install
 
@@ -72,7 +73,55 @@ And reference the bundles in html (razor example)
 </head>
 ```
 
+## Bundle HTML templates for AngularJS
+
+HTML pages used in AngularJS directives and else where can be preloaded into the 
+[template cache](https://docs.angularjs.org/api/ng/service/$templateCache#!).
+
+Include html files to be bundled.
+
+```C#
+public class Bootstrapper : DefaultNancyBootstrapper
+   {
+       protected override void ConfigureConventions(NancyConventions nancyConventions)
+       {
+           base.ConfigureConventions(nancyConventions);
+
+           nancyConventions.StaticContentsConventions.ScriptBundle("scripts.js",
+               new[]
+               {
+                   "js/third-party/*.js",
+                   "!js/third-party/bomb.js",
+                   "js/app.js",
+                   "js/app/templates/*.html", // templates after app, before directives
+                   "js/app/*.js"
+               });
+       }
+   }
+```
+
+Update your JavaScript application to define a module called 'nancy.pile.templates'.
+
+```JavaScript
+angular.module('nancy.pile.templates', []);
+angular.module('app', ['nancy.pile.templates']);
+```
+
+In your directive, refer to the template.
+
+```JavaScript
+angular.module('app.directives')
+  .directive('silly', function() {
+    return {
+      templateUrl: 'js/app/templates/silly.html'
+    }
+  });
+```
+
 ## Release Notes
+
+- 0.4.0, 8/14/2014
+ * Add AngularJS template cache bundling
 
 - 0.3.3, 8/9/2014
  * Use EnumerateFiles for slightly more efficient processing

@@ -23,8 +23,8 @@ namespace Nancy.Pile.Sample
                     "js/third-party/*.js",
                     "!js/third-party/bomb.js",
                     "js/app.js",
-                    "js/app/*.js",
-                    "js/app/templates/*.html"
+                    "js/app/templates/*.html", // templates after app, before directives
+                    "js/app/*.js"
                 });
         }
     }

@@ -39,7 +39,7 @@ namespace Nancy.Pile
             if (files == null) throw new ArgumentNullException("files");
             if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
 
-            var contents = BuildFileList(files, applicationRootPath).Select(path => BuildText(path, minificationType));
+            var contents = BuildFileList(files, applicationRootPath).Select(path => BuildText(path, applicationRootPath, minificationType));
             var bytes = Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents));
             var hash = ComputeHash(bytes);
             AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle { ETag = hash, Bytes = bytes });
@@ -99,10 +99,14 @@ namespace Nancy.Pile
             return files;
         }
 
-        private static string BuildText(string path, MinificationType minificationType)
+        private static string BuildText(string path, string rootPath, MinificationType minificationType)
         {
             var text = File.ReadAllText(path);
-            if (path.EndsWith("html", StringComparison.OrdinalIgnoreCase)) text = BuildScriptTemplate(Path.GetFileName(path), text);
+            if (path.EndsWith("html", StringComparison.OrdinalIgnoreCase))
+            {
+                var cachePath = path.Replace(rootPath, "").Replace('\\', '/');
+                text = BuildScriptTemplate(cachePath, text);
+            }
             if (minificationType == MinificationType.None) text = string.Format("\n/* {0} */\n{1}", path, text);
             if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
             if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);

@@ -17,7 +17,7 @@ namespace Nancy.Pile.Tests
         public void BuildAssetShouldCreateTemplateModule()
         {
             var hash = Bundle.BuildAssetBundle(new[] {"js/app/templates/*.html"}, Bundle.MinificationType.JavaScript, ".");
-            hash.Should().Be(-1799416161);
+            hash.Should().Be(-175735280);
         }
     }
 }
