@@ -42,7 +42,7 @@ namespace Nancy.Pile
             var contents = BuildFileList(files, applicationRootPath).Select(path => BuildText(path, minificationType));
             var bytes = Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents));
             var hash = ComputeHash(bytes);
-            AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle {ETag = hash, Bytes = bytes});
+            AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle { ETag = hash, Bytes = bytes });
             return hash.GetHashCode();
         }
 
@@ -80,30 +80,43 @@ namespace Nancy.Pile
             var excludedFiles = files
                 .Where(file => file.StartsWith("!"))
                 .Select(file => Path.Combine(applicationRootPath, file.Substring(1)))
-                .Select(path => Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
-                .SelectMany(path => path.ToArray())
-                .Distinct();
+                .EnumerateFiles();
 
             var includedFiles = files
                 .Where(file => file.StartsWith("!") == false)
                 .Select(file => Path.Combine(applicationRootPath, file))
-                .Select(path => Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
-                .SelectMany(path => path.ToArray())
-                .Distinct();
+                .EnumerateFiles();
 
             return includedFiles.Except(excludedFiles);
         }
 
+        private static IEnumerable<string> EnumerateFiles(this IEnumerable<string> paths)
+        {
+            var files = paths
+                .Select(path => Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
+                .SelectMany(path => path.ToArray())
+                .Distinct();
+            return files;
+        }
+
         private static string BuildText(string path, MinificationType minificationType)
         {
-            var text = minificationType == MinificationType.None
-                ? string.Format("\n/* {0} */\n", path)
-                : string.Empty;
-            text += File.ReadAllText(path);
+            var text = File.ReadAllText(path);
+            if (path.EndsWith("html", StringComparison.OrdinalIgnoreCase)) text = BuildScriptTemplate(Path.GetFileName(path), text);
+            if (minificationType == MinificationType.None) text = string.Format("\n/* {0} */\n{1}", path, text);
             if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
             if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);
             if (minificationType == MinificationType.JavaScript) return MinifyJavaScript(text);
             return text;
+        }
+
+        private static string BuildScriptTemplate(string name, string text)
+        {
+            const string moduleName = "nancy.pile.templates";
+            var script = string.Format(
+                "angular.module('{0}').run(['$templateCache',function ($templateCache){{$templateCache.put('{1}','{2}');}}]);",
+                moduleName, name, text.Replace("'", "\\'"));
+            return script;
         }
 
         private static string MinifyStyleSheet(string text)
@@ -163,7 +176,7 @@ namespace Nancy.Pile
                                 .Distinct()
                                 .Select(d =>
                                 {
-                                    var fw = new FileSystemWatcher(d) {IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite};
+                                    var fw = new FileSystemWatcher(d) { IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite };
                                     fw.Changed += (sender, args) => reset = true;
                                     fw.EnableRaisingEvents = true;
                                     return fw;

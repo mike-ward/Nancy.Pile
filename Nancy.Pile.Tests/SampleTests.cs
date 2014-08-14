@@ -28,7 +28,7 @@ namespace Nancy.Pile.Tests
             var result = browser.Get("/scripts.js");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             var body = Encoding.UTF8.GetString(result.Body.ToArray());
-            body.Should().Contain("angular.module(\"app\",[\"app.constants\",\"app.controllers\"])");
+            body.Should().Contain("angular.module(\"app\",[\"app.constants\",\"app.controllers\"");
         }
 
         [TestMethod]

@@ -12,5 +12,12 @@ namespace Nancy.Pile.Tests
             var hash = Bundle.BuildAssetBundle(new[] {"*.css"}, Bundle.MinificationType.None, ".");
             hash.Should().Be(186375109);
         }
+
+        [TestMethod]
+        public void BuildAssetShouldCreateTemplateModule()
+        {
+            var hash = Bundle.BuildAssetBundle(new[] {"js/app/templates/*.html"}, Bundle.MinificationType.JavaScript, ".");
+            hash.Should().Be(-1799416161);
+        }
     }
 }
