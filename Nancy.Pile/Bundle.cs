@@ -117,9 +117,10 @@ namespace Nancy.Pile
         private static string BuildScriptTemplate(string name, string text)
         {
             const string moduleName = "nancy.pile.templates";
+            var lines = string.Join("\\\n", text.Split('\n').Select(line => line.Replace("'", "\\'").TrimEnd()));
             var script = string.Format(
                 "angular.module('{0}').run(['$templateCache',function ($templateCache){{$templateCache.put('{1}','{2}');}}]);",
-                moduleName, name, text.Replace("'", "\\'"));
+                moduleName, name, lines);
             return script;
         }
 
