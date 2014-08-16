@@ -39,11 +39,15 @@ namespace Nancy.Pile
             if (files == null) throw new ArgumentNullException("files");
             if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
 
-            var contents = BuildFileList(files, applicationRootPath).Select(path => BuildText(path, applicationRootPath, minificationType));
-            var bytes = Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents));
-            var hash = ComputeHash(bytes);
-            AssetBundles.TryAdd(hash.GetHashCode(), new AssetBundle { ETag = hash, Bytes = bytes });
-            return hash.GetHashCode();
+            var contents = files
+                .BuildFileList(applicationRootPath)
+                .Select(path => BuildText(path, applicationRootPath, minificationType));
+
+            var bytes = Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, contents));
+            var etag = ETag(bytes);
+            var hash = etag.GetHashCode();
+            AssetBundles.TryAdd(hash, new AssetBundle { ETag = etag, Bytes = bytes });
+            return hash;
         }
 
         private static Response ResponseNotModified()
@@ -73,7 +77,7 @@ namespace Nancy.Pile
             public byte[] Bytes { get; set; }
         }
 
-        public static IEnumerable<string> BuildFileList(IEnumerable<string> fileEntries, string applicationRootPath)
+        public static IEnumerable<string> BuildFileList(this IEnumerable<string> fileEntries, string applicationRootPath)
         {
             var files = fileEntries as string[] ?? fileEntries.ToArray();
 
@@ -136,19 +140,19 @@ namespace Nancy.Pile
             return minifier.MinifyJavaScript(text);
         }
 
-        private static string ComputeHash(byte[] bytes)
+        private static string ETag(byte[] bytes)
         {
             var md5 = MD5.Create();
             var hash = md5.ComputeHash(bytes);
             md5.Dispose();
-            return "\"" + BitConverter.ToString(hash).Replace("-", "") + "\"";
+            return string.Concat("\"", BitConverter.ToString(hash).Replace("-", ""), "\"");
         }
     }
 
     public static class BundleConventionBuilder
     {
         public static Func<NancyContext, string, Response> AddBundle(string bundlePath, string contentType,
-            Bundle.MinificationType minificationType, IEnumerable<string> files)
+            Bundle.MinificationType minificationType, IEnumerable<string> fileEntries)
         {
             var hash = 0;
             var reset = true;
@@ -162,20 +166,22 @@ namespace Nancy.Pile
                 if (path.Equals(bundlePath, StringComparison.OrdinalIgnoreCase) == false)
                 {
                     context.Trace.TraceLog.WriteLog(x => x.AppendLine(
-                        string.Concat("[BundleStaticContentConventionBuilder] The requested resource '",
+                        string.Concat("[BundleConventionBuilder] The requested resource '",
                             path, "' does not match convention mapped to '", bundlePath, "'")));
                     return null;
                 }
 
                 if (reset)
                 {
+                    var files = fileEntries as string[] ?? fileEntries.ToArray();
                     Interlocked.Exchange(ref hash, Bundle.BuildAssetBundle(files, minificationType, applicationRootPath));
                     reset = false;
                     lock (sync)
                     {
                         if (monitors == null)
                         {
-                            monitors = Bundle.BuildFileList(files, applicationRootPath)
+                            monitors = files
+                                .BuildFileList(applicationRootPath)
                                 .Select(f => Path.Combine(applicationRootPath, f))
                                 .Select(Path.GetDirectoryName)
                                 .Distinct()
