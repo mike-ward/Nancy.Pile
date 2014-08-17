@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web.Configuration;
 using Microsoft.Ajax.Utilities;
@@ -34,20 +35,35 @@ namespace Nancy.Pile
                 : ResponseFromBundle(bundle, contentType);
         }
 
-        public static int BuildAssetBundle(IEnumerable<string> files, MinificationType minificationType, string applicationRootPath)
+        public static int BuildAssetBundle(IEnumerable<string> fileEntries, MinificationType minificationType, string applicationRootPath)
         {
-            if (files == null) throw new ArgumentNullException("files");
+            if (fileEntries == null) throw new ArgumentNullException("fileEntries");
             if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
 
-            var contents = files
-                .BuildFileList(applicationRootPath)
-                .Select(path => BuildText(path, applicationRootPath, minificationType));
+            var files = fileEntries.BuildFileList(applicationRootPath).ToArray();
 
-            var bytes = Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, contents));
+            var nonHtmlFileContents = files
+                .Where(f => f.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == false)
+                .Select(AsText)
+                .Aggregate(new StringBuilder(), (a, b) => a.Append("\n").Append(b));
+
+            var htmlFileContents = files
+                .Where(f => f.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                .AsAngluarModule(applicationRootPath);
+
+            var contents = Minify(string.Join("\n", nonHtmlFileContents + htmlFileContents), minificationType);
+            var bytes = Encoding.UTF8.GetBytes(contents);
             var etag = ETag(bytes);
             var hash = etag.GetHashCode();
-            AssetBundles.TryAdd(hash, new AssetBundle { ETag = etag, Bytes = bytes });
+            AssetBundles.TryAdd(hash, new AssetBundle {ETag = etag, Bytes = bytes});
             return hash;
+        }
+
+        private static string Minify(string text, MinificationType minificationType)
+        {
+            if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);
+            if (minificationType == MinificationType.JavaScript) return MinifyJavaScript(text);
+            return text;
         }
 
         private static Response ResponseNotModified()
@@ -103,29 +119,29 @@ namespace Nancy.Pile
             return files;
         }
 
-        private static string BuildText(string path, string rootPath, MinificationType minificationType)
+        private static string AsText(this string path)
         {
-            var text = File.ReadAllText(path);
-            if (path.EndsWith("html", StringComparison.OrdinalIgnoreCase))
-            {
-                var cachePath = path.Replace(rootPath, "").Replace('\\', '/');
-                text = BuildScriptTemplate(cachePath, text);
-            }
-            if (minificationType == MinificationType.None) text = string.Format("\n/* {0} */\n{1}", path, text);
-            if (path.IndexOf(".min.", StringComparison.OrdinalIgnoreCase) != -1) return text;
-            if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);
-            if (minificationType == MinificationType.JavaScript) return MinifyJavaScript(text);
+            var text = string.Format("\n/* {0} */\n{1}", path, File.ReadAllText(path));
             return text;
         }
 
-        private static string BuildScriptTemplate(string name, string text)
+        private static string AsAngluarModule(this IEnumerable<string> fileEntries, string rootPath)
         {
-            const string moduleName = "nancy.pile.templates";
-            var lines = string.Join("\\\n", text.Split('\n').Select(line => line.Replace("'", "\\'").TrimEnd()));
-            var script = string.Format(
-                "angular.module('{0}').run(['$templateCache',function ($templateCache){{$templateCache.put('{1}','{2}');}}]);",
-                moduleName, name, lines);
-            return script;
+            var files = fileEntries as string[] ?? fileEntries.ToArray();
+            if (files.Length == 0) return string.Empty;
+
+            var templates = files
+                .Select(file => new
+                {
+                    Name = file.Replace(rootPath, "").Replace('\\', '/'),
+                    Template = Regex.Replace(File.ReadAllText(file), @"\r?\n", "\\n").Replace("'", "\\'")
+                })
+                .Select(nt => string.Format("\t$templateCache.put('{0}','{1}');\n", nt.Name, nt.Template))
+                .Aggregate(new StringBuilder(), (a, b) => a.Append(b));
+
+            return string.Format(
+                "\n\nangular.module('nancy.pile.templates').run(['$templateCache',function ($templateCache){{\n{0}}}]);",
+                templates);
         }
 
         private static string MinifyStyleSheet(string text)
@@ -137,7 +153,7 @@ namespace Nancy.Pile
         private static string MinifyJavaScript(string text)
         {
             var minifier = new Minifier();
-            return minifier.MinifyJavaScript(text);
+            return minifier.MinifyJavaScript(text, new CodeSettings {PreserveImportantComments = false});
         }
 
         private static string ETag(byte[] bytes)
@@ -187,7 +203,7 @@ namespace Nancy.Pile
                                 .Distinct()
                                 .Select(d =>
                                 {
-                                    var fw = new FileSystemWatcher(d) { IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite };
+                                    var fw = new FileSystemWatcher(d) {IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite};
                                     fw.Changed += (sender, args) => reset = true;
                                     fw.EnableRaisingEvents = true;
                                     return fw;

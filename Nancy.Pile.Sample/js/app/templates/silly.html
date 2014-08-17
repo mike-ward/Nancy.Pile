@@ -1,2 +1,27 @@
 ﻿<p>I'm a "silly" directive template</p>
 <p>With multiple lines</p>
+
+<pre>
+Test some preformatted text
+
+<code>
+function fibo() {
+    var first, second, add;
+    for(var i = 0;i &lt; 4000; i++){
+        if (i === 0){
+            first = 1;
+            second = 2;
+        }
+        if (first + second &gt; Number.MAX_VALUE) {
+            console.debug(i, first, second);
+            return;
+        }
+        add = first + second;
+        first = second;
+        second = add;
+    }
+    alert(add);
+}
+fibo();
+</code>
+</pre>
