@@ -99,10 +99,9 @@ public class Bootstrapper : DefaultNancyBootstrapper
    }
 ```
 
-Update your JavaScript application to define a module called 'nancy.pile.templates'.
+Update your JavaScript application to reference 'nancy.pile.templates'.
 
 ```JavaScript
-angular.module('nancy.pile.templates', []);
 angular.module('app', ['nancy.pile.templates']);
 ```
 
@@ -118,6 +117,11 @@ angular.module('app.directives')
 ```
 
 ## Release Notes
+
+- 0.4.1, 8/17/2014
+ * Bundle html in one module declaration.
+ * Remove need to define 'nancy.pile.templates' module
+ * Slightly better compression
 
 - 0.4.0, 8/14/2014
  * Add AngularJS template cache bundling
