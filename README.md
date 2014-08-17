@@ -7,7 +7,7 @@ Takes a pile of files and concatenates them into a single resource.  It's a supe
 
 - Concats and minifies style sheets and javascript files.
 
-- Bundles AngularJS HTML Pages.
+- Bundles AngularJS HTML templates.
 
 - Won't minify files with ".min." in the file name.
 
@@ -75,7 +75,7 @@ And reference the bundles in html (razor example)
 
 ## Bundle HTML templates for AngularJS
 
-HTML pages used in AngularJS directives and else where can be preloaded into the 
+HTML templates used in AngularJS directives and else where can be preloaded into the 
 [template cache](https://docs.angularjs.org/api/ng/service/$templateCache#!).
 
 Include html files to be bundled.
