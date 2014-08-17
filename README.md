@@ -5,7 +5,7 @@ Takes a pile of files and concatenates them into a single resource.  It's a supe
 
 ## Features
 
-- Concats and minifies style sheets and javascript files.
+- Concats and minifies style sheets and JavaScript files.
 
 - Bundles AngularJS HTML templates.
 
