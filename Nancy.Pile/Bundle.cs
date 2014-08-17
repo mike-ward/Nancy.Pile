@@ -29,10 +29,8 @@ namespace Nancy.Pile
         {
             var bundle = AssetBundles[hash];
             var etag = context.Request.Headers.IfNoneMatch.FirstOrDefault();
-
-            return (etag != null && etag.Equals(bundle.ETag, StringComparison.Ordinal))
-                ? ResponseNotModified()
-                : ResponseFromBundle(bundle, contentType);
+            var match = etag != null && etag.Equals(bundle.ETag, StringComparison.Ordinal);
+            return match ? ResponseNotModified() : ResponseFromBundle(bundle, contentType);
         }
 
         public static int BuildAssetBundle(IEnumerable<string> fileEntries, MinificationType minificationType, string applicationRootPath)
@@ -43,12 +41,12 @@ namespace Nancy.Pile
             var files = fileEntries.BuildFileList(applicationRootPath).ToArray();
 
             var nonHtmlFileContents = files
-                .Where(f => f.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == false)
-                .Select(AsText)
+                .Where(file => file.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == false)
+                .Select(file => string.Format("\n/* {0} */\n{1}", file, File.ReadAllText(file)))
                 .Aggregate(new StringBuilder(), (a, b) => a.Append("\n").Append(b));
 
             var htmlFileContents = files
-                .Where(f => f.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                .Where(file => file.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
                 .AsAngluarModule(applicationRootPath);
 
             var contents = Minify(string.Join("\n", nonHtmlFileContents + htmlFileContents), minificationType);
@@ -119,16 +117,9 @@ namespace Nancy.Pile
             return files;
         }
 
-        private static string AsText(this string path)
+        private static string AsAngluarModule(this IEnumerable<string> files, string rootPath)
         {
-            var text = string.Format("\n/* {0} */\n{1}", path, File.ReadAllText(path));
-            return text;
-        }
-
-        private static string AsAngluarModule(this IEnumerable<string> fileEntries, string rootPath)
-        {
-            var files = fileEntries as string[] ?? fileEntries.ToArray();
-            if (files.Length == 0) return string.Empty;
+            if (files.Any() == false) return string.Empty;
 
             var templates = files
                 .Select(file => new
@@ -140,7 +131,7 @@ namespace Nancy.Pile
                 .Aggregate(new StringBuilder(), (a, b) => a.Append(b));
 
             return string.Format(
-                "\n\nangular.module('nancy.pile.templates').run(['$templateCache',function ($templateCache){{\n{0}}}]);",
+                "\n\nangular.module('nancy.pile.templates', []).run(['$templateCache',function ($templateCache){{\n{0}}}]);",
                 templates);
         }
 
