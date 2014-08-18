@@ -154,6 +154,12 @@ namespace Nancy.Pile
             md5.Dispose();
             return string.Concat("\"", BitConverter.ToString(hash).Replace("-", ""), "\"");
         }
+
+        public static void RemoveBundle(int hash)
+        {
+            AssetBundle bundle;
+            AssetBundles.TryRemove(hash, out bundle);
+        }
     }
 
     public static class BundleConventionBuilder
@@ -181,8 +187,9 @@ namespace Nancy.Pile
                 if (reset)
                 {
                     var files = fileEntries as string[] ?? fileEntries.ToArray();
-                    Interlocked.Exchange(ref hash, Bundle.BuildAssetBundle(files, minificationType, applicationRootPath));
+                    var old = Interlocked.Exchange(ref hash, Bundle.BuildAssetBundle(files, minificationType, applicationRootPath));
                     reset = false;
+                    if (old != hash) Bundle.RemoveBundle(old);
                     lock (sync)
                     {
                         if (monitors == null)
