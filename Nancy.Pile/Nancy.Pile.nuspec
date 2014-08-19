@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <iconUrl>http://nancyfx.org/nancy-nuget.png</iconUrl>
-    <releaseNotes>Add AngularJS template cache bundling</releaseNotes>
+    <releaseNotes>Remove bundles after updating</releaseNotes>
     <copyright>Copyright 2014, Mike Ward</copyright>
     <tags>Nancy NancyFx</tags>
   </metadata>

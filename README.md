@@ -118,6 +118,9 @@ angular.module('app.directives')
 
 ## Release Notes
 
+- 0.4.2, 8/18/2014
+ * Remove old bundles after updating.
+
 - 0.4.1, 8/17/2014
  * Bundle html in one module declaration.
  * Remove need to define 'nancy.pile.templates' module
