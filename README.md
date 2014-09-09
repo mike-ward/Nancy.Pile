@@ -9,8 +9,6 @@ Takes a pile of files and concatenates them into a single resource.  It's a supe
 
 - Bundles AngularJS HTML templates.
 
-- Won't minify files with ".min." in the file name.
-
 - Nuget package or include a single file in your current package.
 
 - Detects when files change and invalidates cache.
