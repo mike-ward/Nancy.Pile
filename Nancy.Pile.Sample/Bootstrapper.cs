@@ -14,6 +14,7 @@ namespace Nancy.Pile.Sample
                 new[]
                 {
                     "css/pure.css",
+                    "css/*.less",
                     "css/*.css"
                 });
 

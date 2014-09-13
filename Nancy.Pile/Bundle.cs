@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web.Configuration;
+using dotless.Core;
 using Microsoft.Ajax.Utilities;
 using Nancy.Responses;
 
@@ -42,7 +43,7 @@ namespace Nancy.Pile
 
             var nonHtmlFileContents = files
                 .Where(file => file.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == false)
-                .Select(file => string.Format("\n/* {0} */\n{1}", file, File.ReadAllText(file)))
+                .Select(file => string.Format("\n/* {0} */\n{1}", file, ReadFile(file)))
                 .Aggregate(new StringBuilder(), (a, b) => a.Append("\n").Append(b));
 
             var htmlFileContents = files
@@ -55,6 +56,12 @@ namespace Nancy.Pile
             var hash = etag.GetHashCode();
             AssetBundles.TryAdd(hash, new AssetBundle {ETag = etag, Bytes = bytes});
             return hash;
+        }
+
+        private static string ReadFile(string file)
+        {
+            var text = File.ReadAllText(file);
+            return file.EndsWith(".less") ? Less.Parse(text) : text;
         }
 
         private static string Minify(string text, MinificationType minificationType)
