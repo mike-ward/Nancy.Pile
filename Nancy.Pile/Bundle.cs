@@ -61,7 +61,9 @@ namespace Nancy.Pile
         private static string ReadFile(string file)
         {
             var text = File.ReadAllText(file);
-            return file.EndsWith(".less") ? Less.Parse(text) : text;
+            if (file.EndsWith(".less")) return Less.Parse(text);
+            if (file.EndsWith(".coffee")) return CoffeeScript.Compile(text);
+            return text;
         }
 
         private static string Minify(string text, MinificationType minificationType)
