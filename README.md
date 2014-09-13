@@ -27,8 +27,6 @@ Takes a pile of files and concatenates them into a single resource.  It's a supe
 PM> Install-Package Nancy.Pile
 ```
 
-or just copy the `Bundle.cs` file from the source repository and `PM> Install-Package AjaxMin`
-
 ## Example Usage
 
 Update your bootstrapper.
