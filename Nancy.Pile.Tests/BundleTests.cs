@@ -10,7 +10,7 @@ namespace Nancy.Pile.Tests
         public void BuildAssetShouldReturnHashCode()
         {
             var hash = Bundle.BuildAssetBundle(new[] {"*.css"}, Bundle.MinificationType.None, ".");
-            hash.Should().Be(-392494358);
+            hash.Should().Be(-1098211973);
         }
 
         [TestMethod]
