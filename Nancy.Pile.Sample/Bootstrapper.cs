@@ -15,7 +15,7 @@ namespace Nancy.Pile.Sample
                 {
                     "css/pure.css",
                     "css/*.less",
-                    "css/*.css"
+                    "css/*.scss"
                 });
 
             nancyConventions.StaticContentsConventions.ScriptBundle("scripts.js",

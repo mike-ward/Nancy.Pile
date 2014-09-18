@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web.Configuration;
 using dotless.Core;
 using Microsoft.Ajax.Utilities;
 using Nancy.Responses;
@@ -63,6 +60,7 @@ namespace Nancy.Pile
             var text = File.ReadAllText(file);
             if (file.EndsWith(".less")) return Less.Parse(text);
             if (file.EndsWith(".coffee")) return CoffeeScript.Compile(text);
+            if (file.EndsWith(".scss")) return Sass.Compile(text);
             return text;
         }
 
@@ -168,103 +166,6 @@ namespace Nancy.Pile
         {
             AssetBundle bundle;
             AssetBundles.TryRemove(hash, out bundle);
-        }
-    }
-
-    public static class BundleConventionBuilder
-    {
-        public static Func<NancyContext, string, Response> AddBundle(string bundlePath, string contentType,
-            Bundle.MinificationType minificationType, IEnumerable<string> fileEntries)
-        {
-            var hash = 0;
-            var reset = true;
-            var sync = new object();
-            List<FileSystemWatcher> monitors = null;
-            if (bundlePath.StartsWith("/") == false) bundlePath = string.Concat("/", bundlePath);
-
-            return (context, applicationRootPath) =>
-            {
-                var path = context.Request.Path;
-                if (path.Equals(bundlePath, StringComparison.OrdinalIgnoreCase) == false)
-                {
-                    context.Trace.TraceLog.WriteLog(x => x.AppendLine(
-                        string.Concat("[BundleConventionBuilder] The requested resource '",
-                            path, "' does not match convention mapped to '", bundlePath, "'")));
-                    return null;
-                }
-
-                if (reset)
-                {
-                    var files = fileEntries as string[] ?? fileEntries.ToArray();
-                    var old = Interlocked.Exchange(ref hash, Bundle.BuildAssetBundle(files, minificationType, applicationRootPath));
-                    reset = false;
-                    if (old != hash) Bundle.RemoveBundle(old);
-                    lock (sync)
-                    {
-                        if (monitors == null)
-                        {
-                            monitors = files
-                                .BuildFileList(applicationRootPath)
-                                .Select(f => Path.Combine(applicationRootPath, f))
-                                .Select(Path.GetDirectoryName)
-                                .Distinct()
-                                .Select(d =>
-                                {
-                                    var fw = new FileSystemWatcher(d) {IncludeSubdirectories = true, NotifyFilter = NotifyFilters.LastWrite};
-                                    fw.Changed += (sender, args) => reset = true;
-                                    fw.EnableRaisingEvents = true;
-                                    return fw;
-                                })
-                                .ToList();
-                        }
-                    }
-                }
-                return Bundle.ResponseFactory(hash, contentType, context);
-            };
-        }
-    }
-
-    public static class BundleConventionsExtensions
-    {
-        private static bool Minify
-        {
-            get
-            {
-                var cfg = (CompilationSection)ConfigurationManager.GetSection("system.web/compilation");
-                return cfg == null || !cfg.Debug;
-            }
-        }
-
-        public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
-            IEnumerable<string> files)
-        {
-            conventions.StyleBundle(requestedPath, Minify, files);
-        }
-
-        public static void StyleBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
-            bool compress, IEnumerable<string> files)
-        {
-            var compression = compress ? Bundle.MinificationType.StyleSheet : Bundle.MinificationType.None;
-            conventions.AddBundle(requestedPath, "text/css;charset=utf-8", compression, files);
-        }
-
-        public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
-            IEnumerable<string> files)
-        {
-            conventions.ScriptBundle(requestedPath, Minify, files);
-        }
-
-        public static void ScriptBundle(this IList<Func<NancyContext, string, Response>> conventions, string requestedPath,
-            bool minify, IEnumerable<string> files)
-        {
-            var compression = minify ? Bundle.MinificationType.JavaScript : Bundle.MinificationType.None;
-            conventions.AddBundle(requestedPath, "application/x-javascript;charset=utf-8", compression, files);
-        }
-
-        private static void AddBundle(this ICollection<Func<NancyContext, string, Response>> conventions, string requestedPath, string contentType,
-            Bundle.MinificationType minificationType, IEnumerable<string> files)
-        {
-            conventions.Add(BundleConventionBuilder.AddBundle(requestedPath, contentType, minificationType, files));
         }
     }
 }
