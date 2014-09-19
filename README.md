@@ -1,24 +1,21 @@
-#Nancy.Pile [![Build status](https://ci.appveyor.com/api/projects/status/7h5n3c8ah28a5hx5)](https://ci.appveyor.com/project/mike-ward/nancy-pile)
+# Nancy.Pile [![Build status](https://ci.appveyor.com/api/projects/status/7h5n3c8ah28a5hx5)](https://ci.appveyor.com/project/mike-ward/nancy-pile)
 
 Takes a pile of files and concatenates them into a single resource.  It's a super simple asset bundler for NancyFx.
 
 ## Features
 
+- Bundles at runtime. No modifications to build process required.
+- ETags insure bundle downloaded once. Additional calls return `304 Not Modified`
 - Concats and minifies style sheets and JavaScript files.
-
+- Preprocesses Less, Sass and CoffeeScript.
 - Bundles AngularJS HTML templates.
-
-- Nuget package or include a single file in your current package.
-
-- Detects when files change and invalidates cache.
-
-- Wildcard characters with duplicate detection (useful when ordering matters)
-
+- Detects when files change and rebuilds bundle.
+- Wildcard characters with duplicate detection (useful when ordering matters).
 - Excludes file(s) if first character is "!".
-
 - Unminified bundles insert comment with file name for easier debugging.
-
 - Overloaded bundle methods automatically minify on release builds only.
+- [Nuget package](http://www.nuget.org/packages/Nancy.Pile/) available.
+- Kittens are never in danger.
 
 ## Install
 
@@ -41,7 +38,8 @@ public class Bootstrapper : DefaultNancyBootstrapper
                new[]
                {
                    "css/pure.css",
-                   "css/*.css"
+                   "css/*.less",
+                   "css/*.scss"
                });
 
            nancyConventions.StaticContentsConventions.ScriptBundle("scripts.js",
@@ -56,7 +54,7 @@ public class Bootstrapper : DefaultNancyBootstrapper
    }
 ```
 
-And reference the bundles in html (razor example)
+And reference the bundles in HTML (razor example)
 
 ```HTML
 <html lang="en">
@@ -73,7 +71,7 @@ And reference the bundles in html (razor example)
 HTML templates used in AngularJS directives and else where can be preloaded into the 
 [template cache](https://docs.angularjs.org/api/ng/service/$templateCache#!).
 
-Include html files to be bundled.
+Include HTML files to be bundled.
 
 ```C#
 public class Bootstrapper : DefaultNancyBootstrapper
@@ -113,11 +111,16 @@ angular.module('app.directives')
 
 ## Release Notes
 
+- 0.5.0
+ * Add Less support
+ * Add CoffeScript support
+ * Add Sass Support
+
 - 0.4.2, 8/18/2014
  * Remove old bundles after updating.
 
 - 0.4.1, 8/17/2014
- * Bundle html in one module declaration.
+ * Bundle HTML in one module declaration.
  * Remove need to define 'nancy.pile.templates' module
  * Slightly better compression
 

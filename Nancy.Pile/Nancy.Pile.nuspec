@@ -11,8 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <iconUrl>http://nancyfx.org/nancy-nuget.png</iconUrl>
-    <releaseNotes>Remove bundles after updating</releaseNotes>
+    <releaseNotes>Add Less, Sass and CoffeeScript support</releaseNotes>
     <copyright>Copyright 2014, Mike Ward</copyright>
-    <tags>Nancy NancyFx</tags>
+    <tags>Nancy NancyFx Bundle Concat CSS SASS SCSS Less</tags>
   </metadata>
 </package>
