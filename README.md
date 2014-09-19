@@ -1,9 +1,6 @@
-Nancy.Pile
-==========
+#Nancy.Pile [![Build status](https://ci.appveyor.com/api/projects/status/7h5n3c8ah28a5hx5)](https://ci.appveyor.com/project/mike-ward/nancy-pile)
 
 Takes a pile of files and concatenates them into a single resource.  It's a super simple asset bundler for NancyFx.
-
-[![Build status](https://ci.appveyor.com/api/projects/status/7h5n3c8ah28a5hx5)](https://ci.appveyor.com/project/mike-ward/nancy-pile)
 
 ## Features
 
