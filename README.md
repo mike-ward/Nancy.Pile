@@ -15,7 +15,7 @@ Takes a pile of files and concatenates them into a single resource.  It's a supe
 - Unminified bundles insert comment with file name for easier debugging.
 - Overloaded bundle methods automatically minify on release builds only.
 - [Nuget package](http://www.nuget.org/packages/Nancy.Pile/) available.
-- Kittens are never in danger.
+- Kittens are never endangered.
 
 ## Install
 
