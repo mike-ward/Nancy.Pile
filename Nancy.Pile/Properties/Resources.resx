@@ -121,4 +121,13 @@
   <data name="CoffeeScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\coffee-script.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="tsc" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tsc-compile.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="TypeScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tsc.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="typescriptServices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\typescriptServices.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

@@ -12,6 +12,9 @@
       This view was rendered using the Nancy Razor view engine
       <p ng-controller="myController as demo">{{demo.message}}</p>
       <div data-silly></div>
+      <script>
+        document.write('<p> Greeter says: ' + greeter.greet() + '</p>');
+      </script>
     </div>
   </body>
 </html>

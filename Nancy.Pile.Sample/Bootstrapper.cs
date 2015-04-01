@@ -25,6 +25,7 @@ namespace Nancy.Pile.Sample
                     "!js/third-party/bomb.js",
                     "js/app/*.js",
                     "js/coffee/*.coffee",
+                    "js/typescript/*.ts",
                     "js/app/templates/*.html"
                 });
         }

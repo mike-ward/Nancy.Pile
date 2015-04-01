@@ -33,14 +33,14 @@ namespace Nancy.Pile
 
         public static int BuildAssetBundle(IEnumerable<string> fileEntries, MinificationType minificationType, string applicationRootPath)
         {
-            if (fileEntries == null) throw new ArgumentNullException("fileEntries");
-            if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
+            if (fileEntries == null) throw new ArgumentNullException(nameof(fileEntries));
+            if (applicationRootPath == null) throw new ArgumentNullException(nameof(applicationRootPath));
 
             var files = fileEntries.BuildFileList(applicationRootPath).ToArray();
 
             var nonHtmlFileContents = files
                 .Where(file => file.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == false)
-                .Select(file => string.Format("\n/* {0} */\n{1}", file, ReadFile(file)))
+                .Select(file => $"\n/* {file} */\n{ReadFile(file)}")
                 .Aggregate(new StringBuilder(), (a, b) => a.Append("\n").Append(b));
 
             var htmlFileContents = files
@@ -51,7 +51,7 @@ namespace Nancy.Pile
             var bytes = Encoding.UTF8.GetBytes(contents);
             var etag = ETag(bytes);
             var hash = etag.GetHashCode();
-            AssetBundles.TryAdd(hash, new AssetBundle {ETag = etag, Bytes = bytes});
+            AssetBundles.TryAdd(hash, new AssetBundle { ETag = etag, Bytes = bytes });
             return hash;
         }
 
@@ -61,6 +61,7 @@ namespace Nancy.Pile
             if (file.EndsWith(".less")) return Less.Parse(text);
             if (file.EndsWith(".coffee")) return CoffeeScript.Compile(text);
             if (file.EndsWith(".scss")) return Sass.Compile(text);
+            if (file.EndsWith(".ts")) return TypeScript.Compile(text);
             return text;
         }
 
@@ -77,18 +78,15 @@ namespace Nancy.Pile
             {
                 StatusCode = HttpStatusCode.NotModified,
                 ContentType = null,
-                Contents = Response.NoBody
+                Contents = Response.NoBody, Headers = { ["Cache-Control"] = "no-cache" }
             };
-            response.Headers["Cache-Control"] = "no-cache";
             return response;
         }
 
         private static Response ResponseFromBundle(AssetBundle assetBundle, string contentType)
         {
             var stream = new MemoryStream(assetBundle.Bytes);
-            var response = new StreamResponse(() => stream, contentType);
-            response.Headers["ETag"] = assetBundle.ETag;
-            response.Headers["Cache-Control"] = "no-cache";
+            var response = new StreamResponse(() => stream, contentType) { Headers = { ["ETag"] = assetBundle.ETag } };
             return response;
         }
 
@@ -134,12 +132,10 @@ namespace Nancy.Pile
                     Name = file.Replace(rootPath, "").Replace('\\', '/'),
                     Template = Regex.Replace(File.ReadAllText(file), @"\r?\n", "\\n").Replace("'", "\\'")
                 })
-                .Select(nt => string.Format("\t$templateCache.put('{0}','{1}');\n", nt.Name, nt.Template))
+                .Select(nt => $"\t$templateCache.put('{nt.Name}','{nt.Template}');\n")
                 .Aggregate(new StringBuilder(), (a, b) => a.Append(b));
 
-            return string.Format(
-                "\n\nangular.module('nancy.pile.templates', []).run(['$templateCache',function ($templateCache){{\n{0}}}]);",
-                templates);
+            return $"\n\nangular.module('nancy.pile.templates', []).run(['$templateCache',function ($templateCache){{\n{templates}}}]);";
         }
 
         private static string MinifyStyleSheet(string text)
@@ -151,7 +147,7 @@ namespace Nancy.Pile
         private static string MinifyJavaScript(string text)
         {
             var minifier = new Minifier();
-            return minifier.MinifyJavaScript(text, new CodeSettings {PreserveImportantComments = false});
+            return minifier.MinifyJavaScript(text, new CodeSettings { PreserveImportantComments = false });
         }
 
         private static string ETag(byte[] bytes)

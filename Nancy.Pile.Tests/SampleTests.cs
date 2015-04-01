@@ -37,7 +37,6 @@ namespace Nancy.Pile.Tests
             var browser = new Browser(new Sample.Bootstrapper());
             var result = browser.Get("/scripts.js");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Headers["Cache-Control"].Should().Be("no-cache");
             var etag = result.Headers["ETag"];
             etag.Should().NotBeNullOrWhiteSpace();
             var result2 = browser.Get("/scripts.js", with => with.Header("If-None-Match", etag));
