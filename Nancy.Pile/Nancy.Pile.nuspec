@@ -6,13 +6,13 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/mike-ward/Nancy.Pile/LICENSE.txt</licenseUrl>
+    <licenseUrl>https://github.com/mike-ward/Nancy.Pile/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/mike-ward/Nancy.Pile</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <iconUrl>http://nancyfx.org/nancy-nuget.png</iconUrl>
-    <releaseNotes>Add Less, Sass and CoffeeScript support</releaseNotes>
-    <copyright>Copyright 2014, Mike Ward</copyright>
-    <tags>Nancy NancyFx Bundle Concat CSS SASS SCSS Less</tags>
+    <releaseNotes>Add Typescript support</releaseNotes>
+    <copyright>Copyright 2015, Mike Ward</copyright>
+    <tags>Nancy NancyFx Bundle Concat CSS SASS SCSS Less Typescript</tags>
   </metadata>
 </package>

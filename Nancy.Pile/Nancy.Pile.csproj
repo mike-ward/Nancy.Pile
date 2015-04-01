@@ -71,7 +71,6 @@
     <Compile Include="TypeScript.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="license.md" />
     <None Include="Nancy.Pile.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
