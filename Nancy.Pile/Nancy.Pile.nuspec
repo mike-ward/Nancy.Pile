@@ -6,7 +6,7 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/mike-ward/Nancy.Pile/blob/master/Nancy.Pile/license.md</licenseUrl>
+    <licenseUrl>https://github.com/mike-ward/Nancy.Pile/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/mike-ward/Nancy.Pile</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
