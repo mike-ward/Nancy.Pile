@@ -11,11 +11,12 @@ namespace Nancy.Pile
             try
             {
                 var engine = new Engine();
-                engine.SetValue("typescriptin", text);
-                engine.Execute(Resources.TypeScript);
-                engine.Execute(Resources.tsc);
-                var js = engine.GetValue("typescriptout").AsString();
-                return js;
+                engine.SetValue("source", text);
+                //engine.SetValue("libSource", Resources.lib_d);
+                engine.Execute(Resources.typescript);
+                engine.Execute(Resources.typescript_api);
+                var result = engine.GetValue("result").AsString();
+                return result;
             }
             catch (Exception e)
             {

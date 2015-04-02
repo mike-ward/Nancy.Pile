@@ -68,7 +68,7 @@ namespace Nancy.Pile.Properties {
         /// * Copyright 2011, Jeremy Ashkenas
         /// * Released under the MIT License
         /// */
-        ///(function(root){var CoffeeScript=function(){function require(e){return require[e]}return require[&quot;./helpers&quot;]=function(){var e={},t={exports:e};return function(){var t,n,i,r,s,o;e.starts=function(e,t,n){return t===e.substr(n,t.length)},e.ends=function(e,t,n){var i;return i=t.length,t===e.substr(e.length-i-(n||0),i)},e.repeat=s=function(e,t){var n;for(n=&quot;&quot;;t&gt;0;)1&amp;t&amp;&amp;(n+=e [rest of string was truncated]&quot;;.
+        ///(function(root){var CoffeeScript=function(){function require(e){return require[e]}return require[&quot;./helpers&quot;]=function(){var e={},t={exports:e};return function(){var t,n,i,r,s,o;e.starts=function(e,t,n){return t===e.substr(n,t.length)},e.ends=function(e,t,n){var i;return i=t.length,t===e.substr(e.length-i-(n||0),i)},e.repeat=s=function(e,t){var n;for(n=&quot;&quot;;t&gt;0;)1&amp;t [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CoffeeScript {
             get {
@@ -77,66 +77,47 @@ namespace Nancy.Pile.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;use strict&apos;;
-        ///
-        ///var tsc = function(input) {
-        ///  var opts = ts.getDefaultCompilerOptions();
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] lib_d {
+            get {
+                object obj = ResourceManager.GetObject("lib_d", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*! *****************************************************************************
+        ///Copyright (c) Microsoft Corporation. All rights reserved. 
+        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
+        ///this file except in compliance with the License. You may obtain a copy of the
+        ///License at http://www.apache.org/licenses/LICENSE-2.0  
+        /// 
+        ///THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+        ///KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string typescript {
+            get {
+                return ResourceManager.GetString("typescript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to var tsc = function(input) {
+        ///  var opts = {};
         ///  var host = ts.createCompilerHost(opts);
         ///
         ///  var output = &apos;&apos;;
-        ///  host.writeFile = function (filename, text) {
-        ///    output += text;
-        ///  };
-        ///
-        ///  host.getSourceFile = function() {
-        ///    return ts.createSourceFile(&apos;&apos;, input, opts.target, &apos;0&apos;);
-        ///  }
-        ///
-        ///  var prog = ts.createProgram([&apos;ipnput&apos;], opts, host);
-        ///  prog.getDiagnostics();
-        ///  var checker = prog.getTypeChecker();
-        ///  checker.emitFiles();
-        ///
-        ///  return output;
-        ///}
-        ///
-        ///typescriptout =  tsc(t [rest of string was truncated]&quot;;.
+        ///  host.writeFile = function (filename, text) { output += text; };
+        ///  host.getSourceFile = function() { return ts.createSourceFile(&apos;textsource&apos;, input, 0, &apos;0&apos;); }
+        ///  host.getDefaultLibFilename = function () { return &apos;&apos;; }
+        ///  host.getCurrentDirectory = function () { return &apos;/&apos; }
+        ///  host.useCaseSensitiveFileNames = function () { return false; }
+        ///  host.getCanonicalFileName = function (text) { return  [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string tsc {
+        internal static string typescript_api {
             get {
-                return ResourceManager.GetString("tsc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to /*! *****************************************************************************
-        ///Copyright (c) Microsoft Corporation. All rights reserved. 
-        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
-        ///this file except in compliance with the License. You may obtain a copy of the
-        ///License at http://www.apache.org/licenses/LICENSE-2.0  
-        /// 
-        ///THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-        ///KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string TypeScript {
-            get {
-                return ResourceManager.GetString("TypeScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to /*! *****************************************************************************
-        ///Copyright (c) Microsoft Corporation. All rights reserved. 
-        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
-        ///this file except in compliance with the License. You may obtain a copy of the
-        ///License at http://www.apache.org/licenses/LICENSE-2.0  
-        /// 
-        ///THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-        ///KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string typescriptServices {
-            get {
-                return ResourceManager.GetString("typescriptServices", resourceCulture);
+                return ResourceManager.GetString("typescript_api", resourceCulture);
             }
         }
     }
