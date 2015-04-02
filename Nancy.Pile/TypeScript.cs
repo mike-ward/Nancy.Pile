@@ -12,7 +12,7 @@ namespace Nancy.Pile
             {
                 var engine = new Engine();
                 engine.SetValue("source", text);
-                //engine.SetValue("libSource", Resources.lib_d);
+                engine.SetValue("libSource", ""); //Resources.lib_d);
                 engine.Execute(Resources.typescript);
                 engine.Execute(Resources.typescript_api);
                 var result = engine.GetValue("result").AsString();

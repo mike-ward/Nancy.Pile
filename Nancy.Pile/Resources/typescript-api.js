@@ -1,5 +1,5 @@
 ﻿
-var tsc = function (input) {
+var tsc = function (input, libSource) {
   var opts = {};
   var host = ts.createCompilerHost(opts);
 
@@ -12,7 +12,7 @@ var tsc = function (input) {
   host.getNewLine = function () { return '\n'; }
 
   host.getSourceFile = function (fn) {
-    return ts.createSourceFile(fn, fn === 'input.ts' ? input : '', opts.target, '0');
+    return ts.createSourceFile(fn, fn === 'input.ts' ? input : libSource, opts.target, '0');
   }
 
   var prog = ts.createProgram(['input'], opts, host);
@@ -22,4 +22,4 @@ var tsc = function (input) {
   return output;
 }
 
-var result = tsc(source);
+var result = tsc(source, libSource);
