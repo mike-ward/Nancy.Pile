@@ -11,9 +11,9 @@ namespace Nancy.Pile
             try
             {
                 var engine = new Engine();
-                engine.SetValue("source", text);
-                engine.SetValue("libSource", ""); //Resources.lib_d);
                 engine.Execute(Resources.typescript);
+                engine.SetValue("source", text);
+                engine.SetValue("libSource", "");//Resources.lib_d);
                 engine.Execute(Resources.typescript_api);
                 var result = engine.GetValue("result").AsString();
                 return result;
