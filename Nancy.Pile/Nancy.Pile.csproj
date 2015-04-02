@@ -91,8 +91,8 @@
     <Content Include="NSass.Wrapper\NSass.Wrapper.x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\lib.d.js" />
     <Content Include="Resources\typescript-api.js" />
-    <TypeScriptCompile Include="Resources\lib.d.ts" />
     <EmbeddedResource Include="Resources\typescript.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

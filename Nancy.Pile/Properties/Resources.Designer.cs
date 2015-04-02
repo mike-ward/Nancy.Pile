@@ -77,12 +77,18 @@ namespace Nancy.Pile.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to /*! *****************************************************************************
+        ///Copyright (c) Microsoft Corporation. All rights reserved. 
+        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
+        ///this file except in compliance with the License. You may obtain a copy of the
+        ///License at http://www.apache.org/licenses/LICENSE-2.0  
+        /// 
+        ///THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+        ///KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static byte[] lib_d {
+        internal static string lib_d {
             get {
-                object obj = ResourceManager.GetObject("lib_d", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("lib_d", resourceCulture);
             }
         }
         
@@ -103,17 +109,20 @@ namespace Nancy.Pile.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to var tsc = function(input) {
+        ///   Looks up a localized string similar to 
+        ///var tsc = function (input, libSource) {
         ///  var opts = {};
         ///  var host = ts.createCompilerHost(opts);
         ///
         ///  var output = &apos;&apos;;
         ///  host.writeFile = function (filename, text) { output += text; };
-        ///  host.getSourceFile = function() { return ts.createSourceFile(&apos;textsource&apos;, input, 0, &apos;0&apos;); }
-        ///  host.getDefaultLibFilename = function () { return &apos;&apos;; }
-        ///  host.getCurrentDirectory = function () { return &apos;/&apos; }
+        ///  host.getDefaultLibFilename = function () { return &apos;lib&apos;; }
+        ///  host.getCurrentDirectory = function () { return &apos;&apos;; }
         ///  host.useCaseSensitiveFileNames = function () { return false; }
-        ///  host.getCanonicalFileName = function (text) { return  [rest of string was truncated]&quot;;.
+        ///  host.getCanonicalFileName = function (text) { return text; }
+        ///  host.getNewLine = function () { return &apos;\n&apos;; }
+        ///
+        ///  host.getSourceFi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string typescript_api {
             get {
