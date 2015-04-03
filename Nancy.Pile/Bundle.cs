@@ -61,7 +61,7 @@ namespace Nancy.Pile
             if (file.EndsWith(".less")) return Less.Parse(text);
             if (file.EndsWith(".coffee")) return CoffeeScript.Compile(text);
             if (file.EndsWith(".scss")) return Sass.Compile(text);
-            if (file.EndsWith(".ts")) return TypeScript.Compile(text);
+            //if (file.EndsWith(".ts")) return TypeScript.Compile(text); not ready yet.
             return text;
         }
 
