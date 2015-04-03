@@ -79,7 +79,7 @@ namespace Nancy.Pile
                 StatusCode = HttpStatusCode.NotModified,
                 ContentType = null,
                 Contents = Response.NoBody,
-                Headers = new Dictionary<string, string> {{ "Cache-Control", "no-cache" }}
+                Headers = new Dictionary<string, string> { { "Cache-Control", "no-cache" } }
             };
             return response;
         }
@@ -87,7 +87,7 @@ namespace Nancy.Pile
         private static Response ResponseFromBundle(AssetBundle assetBundle, string contentType)
         {
             var stream = new MemoryStream(assetBundle.Bytes);
-            var response = new StreamResponse(() => stream, contentType) { Headers = { ["ETag"] = assetBundle.ETag } };
+            var response = new StreamResponse(() => stream, contentType) { Headers = new Dictionary<string, string> { { "ETag", assetBundle.ETag } } };
             return response;
         }
 
