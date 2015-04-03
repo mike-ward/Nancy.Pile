@@ -111,6 +111,11 @@ angular.module('app.directives')
 
 ## Release Notes
 
+- 0.6.0
+  * Fix broken ETag
+  * Started in on typescript support but not satisfied
+  * Nuget package states Typescript support. This is not true (sorry)
+
 - 0.5.0
  * Add Less support
  * Add CoffeScript support
