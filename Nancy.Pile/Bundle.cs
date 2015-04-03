@@ -40,7 +40,7 @@ namespace Nancy.Pile
 
             var nonHtmlFileContents = files
                 .Where(file => file.EndsWith(".html", StringComparison.OrdinalIgnoreCase) == false)
-                .Select(file => $"\n/* {file} */\n{ReadFile(file)}")
+                .Select(file => string.Format("\n/* {0} */\n{1}", file, ReadFile(file)))
                 .Aggregate(new StringBuilder(), (a, b) => a.Append("\n").Append(b));
 
             var htmlFileContents = files
@@ -132,10 +132,12 @@ namespace Nancy.Pile
                     Name = file.Replace(rootPath, "").Replace('\\', '/'),
                     Template = Regex.Replace(File.ReadAllText(file), @"\r?\n", "\\n").Replace("'", "\\'")
                 })
-                .Select(nt => $"\t$templateCache.put('{nt.Name}','{nt.Template}');\n")
+                .Select(nt => string.Format("\t$templateCache.put('{0}','{1}');\n", nt.Name, nt.Template))
                 .Aggregate(new StringBuilder(), (a, b) => a.Append(b));
 
-            return $"\n\nangular.module('nancy.pile.templates', []).run(['$templateCache',function ($templateCache){{\n{templates}}}]);";
+            return string.Format(
+                "\n\nangular.module('nancy.pile.templates', [])" +
+                ".run(['$templateCache',function ($templateCache){{\n{0}}}]);", templates);
         }
 
         private static string MinifyStyleSheet(string text)
