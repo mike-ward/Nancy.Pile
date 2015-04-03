@@ -33,8 +33,8 @@ namespace Nancy.Pile
 
         public static int BuildAssetBundle(IEnumerable<string> fileEntries, MinificationType minificationType, string applicationRootPath)
         {
-            if (fileEntries == null) throw new ArgumentNullException(nameof(fileEntries));
-            if (applicationRootPath == null) throw new ArgumentNullException(nameof(applicationRootPath));
+            if (fileEntries == null) throw new ArgumentNullException("fileEntries");
+            if (applicationRootPath == null) throw new ArgumentNullException("applicationRootPath");
 
             var files = fileEntries.BuildFileList(applicationRootPath).ToArray();
 
@@ -78,7 +78,8 @@ namespace Nancy.Pile
             {
                 StatusCode = HttpStatusCode.NotModified,
                 ContentType = null,
-                Contents = Response.NoBody, Headers = { ["Cache-Control"] = "no-cache" }
+                Contents = Response.NoBody,
+                Headers = new Dictionary<string, string> {{ "Cache-Control", "no-cache" }}
             };
             return response;
         }
