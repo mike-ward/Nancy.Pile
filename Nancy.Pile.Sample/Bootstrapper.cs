@@ -1,4 +1,5 @@
 ﻿using Nancy.Conventions;
+using Nancy.Diagnostics;
 
 namespace Nancy.Pile.Sample
 {
@@ -29,5 +30,7 @@ namespace Nancy.Pile.Sample
                     "js/app/templates/*.html"
                 });
         }
+
+        protected override DiagnosticsConfiguration DiagnosticsConfiguration => new DiagnosticsConfiguration { Password = @"secret" };
     }
 }
