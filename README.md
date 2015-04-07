@@ -111,6 +111,9 @@ angular.module('app.directives')
 
 ## Release Notes
 
+- 0.6.1
+  * Fix broken resource files
+
 - 0.6.0
   * Fix broken ETag
   * Started in on typescript support but not satisfied
