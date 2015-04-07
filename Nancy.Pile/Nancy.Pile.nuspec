@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <iconUrl>http://nancyfx.org/nancy-nuget.png</iconUrl>
-    <releaseNotes>Add Typescript support</releaseNotes>
+    <releaseNotes>Fixe broken resource</releaseNotes>
     <copyright>Copyright 2015, Mike Ward</copyright>
     <tags>Nancy NancyFx Bundle Concat CSS SASS SCSS Less Typescript</tags>
   </metadata>
