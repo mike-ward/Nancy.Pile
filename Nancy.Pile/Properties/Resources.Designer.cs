@@ -75,58 +75,5 @@ namespace Nancy.Pile.Properties {
                 return ResourceManager.GetString("CoffeeScript", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to /*! *****************************************************************************
-        ///Copyright (c) Microsoft Corporation. All rights reserved. 
-        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
-        ///this file except in compliance with the License. You may obtain a copy of the
-        ///License at http://www.apache.org/licenses/LICENSE-2.0  
-        /// 
-        ///THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-        ///KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string lib_d {
-            get {
-                return ResourceManager.GetString("lib_d", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to /*! *****************************************************************************
-        ///Copyright (c) Microsoft Corporation. All rights reserved.
-        ///Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use
-        ///this file except in compliance with the License. You may obtain a copy of the
-        ///License at http://www.apache.org/licenses/LICENSE-2.0
-        ///THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-        ///KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLI [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string typescript {
-            get {
-                return ResourceManager.GetString("typescript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 
-        ///var tsc = function (input, lib) {
-        ///  var opts = {};
-        ///  var host = ts.createCompilerHost(opts);
-        ///
-        ///  var output = &apos;&apos;;
-        ///  host.writeFile = function (filename, text) { output += text; };
-        ///  host.getDefaultLibFilename = function () { return &apos;lib.d.ts&apos;; }
-        ///  host.getCurrentDirectory = function () { return &apos;&apos;; }
-        ///  host.useCaseSensitiveFileNames = function () { return false; }
-        ///  host.getCanonicalFileName = function (fn) { return fn; }
-        ///  host.getNewLine = function () { return &apos;\n&apos;; }
-        ///
-        ///  host.getSourceFile =  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string typescript_api {
-            get {
-                return ResourceManager.GetString("typescript_api", resourceCulture);
-            }
-        }
     }
 }

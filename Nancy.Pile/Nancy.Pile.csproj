@@ -80,7 +80,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Sass.cs" />
-    <Compile Include="TypeScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -104,9 +103,6 @@
     <Content Include="NSass.Wrapper\NSass.Wrapper.x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Resources\lib.d.js" />
-    <EmbeddedResource Include="Resources\typescript-api.js" />
-    <EmbeddedResource Include="Resources\typescript.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
