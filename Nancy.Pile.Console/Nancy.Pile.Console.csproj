@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Nancy.Pile.Console.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nancy.Pile\Nancy.Pile.csproj">
