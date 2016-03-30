@@ -15,4 +15,15 @@
     <copyright>Copyright 2016, Mike Ward</copyright>
     <tags>Nancy NancyFx Bundle Concat CSS SASS SCSS Less Typescript</tags>
   </metadata>
+  <files>
+    <file src="bin\release\Nancy.Pile.Console.exe" target="lib" />
+    <file src="bin\release\AjaxMin.dll" target="lib" />
+    <file src="bin\release\dotless.Core.dll" target="lib" />
+    <file src="bin\release\Jint.dll" target="lib" />
+    <file src="bin\release\Nancy.dll" target="lib" />
+    <file src="bin\release\Nancy.Pile.dll" target="lib" />
+    <file src="bin\release\NSass.Core.dll" target="lib" />
+    <file src="bin\release\NSass.Wrapper\Nsass.Wrapper.x64.dll" target="lib/NSass.Wrapper" />
+    <file src="bin\release\NSass.Wrapper\Nsass.Wrapper.x86.dll" target="lib/NSass.Wrapper" />
+  </files>
 </package>
