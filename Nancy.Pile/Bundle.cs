@@ -20,9 +20,10 @@ namespace Nancy.Pile
             None,
             StyleSheet,
             JavaScript
-        };
+        }
 
-        private static readonly ConcurrentDictionary<int, AssetBundle> AssetBundles = new ConcurrentDictionary<int, AssetBundle>();
+        private static readonly ConcurrentDictionary<int, AssetBundle> AssetBundles =
+            new ConcurrentDictionary<int, AssetBundle>();
 
         public static Response ResponseFactory(int hash, string contentType, NancyContext context)
         {
@@ -32,7 +33,8 @@ namespace Nancy.Pile
             return match ? ResponseNotModified() : ResponseFromBundle(bundle, contentType);
         }
 
-        public static int BuildAssetBundle(IEnumerable<string> fileEntries, MinificationType minificationType, string applicationRootPath)
+        public static int BuildAssetBundle(IEnumerable<string> fileEntries, MinificationType minificationType,
+            string applicationRootPath)
         {
             if (fileEntries == null) throw new ArgumentNullException(nameof(fileEntries));
             if (applicationRootPath == null) throw new ArgumentNullException(nameof(applicationRootPath));
@@ -52,8 +54,13 @@ namespace Nancy.Pile
             var bytes = Encoding.UTF8.GetBytes(contents);
             var etag = ETag(bytes);
             var hash = etag.GetHashCode();
-            AssetBundles.TryAdd(hash, new AssetBundle { ETag = etag, Bytes = bytes });
+            AssetBundles.TryAdd(hash, new AssetBundle {ETag = etag, Bytes = bytes});
             return hash;
+        }
+
+        public static byte[] GetBundleBytes(int id)
+        {
+            return AssetBundles[id].Bytes;
         }
 
         private static string ReadFile(string file)
@@ -79,7 +86,7 @@ namespace Nancy.Pile
                 StatusCode = HttpStatusCode.NotModified,
                 ContentType = null,
                 Contents = Response.NoBody,
-                Headers = new Dictionary<string, string> { { "Cache-Control", "no-cache" } }
+                Headers = new Dictionary<string, string> {{"Cache-Control", "no-cache"}}
             };
             return response;
         }
@@ -87,14 +94,11 @@ namespace Nancy.Pile
         private static Response ResponseFromBundle(AssetBundle assetBundle, string contentType)
         {
             var stream = new MemoryStream(assetBundle.Bytes);
-            var response = new StreamResponse(() => stream, contentType) { Headers = new Dictionary<string, string> { { "ETag", assetBundle.ETag } } };
+            var response = new StreamResponse(() => stream, contentType)
+            {
+                Headers = new Dictionary<string, string> {{"ETag", assetBundle.ETag}}
+            };
             return response;
-        }
-
-        private class AssetBundle
-        {
-            public string ETag { get; set; }
-            public byte[] Bytes { get; set; }
         }
 
         public static IEnumerable<string> BuildFileList(this IEnumerable<string> fileEntries, string applicationRootPath)
@@ -118,7 +122,10 @@ namespace Nancy.Pile
         private static IEnumerable<string> EnumerateFiles(this IEnumerable<string> paths)
         {
             var files = paths
-                .Select(path => Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path), SearchOption.AllDirectories))
+                .Select(
+                    path =>
+                        Directory.EnumerateFiles(Path.GetDirectoryName(path), Path.GetFileName(path),
+                            SearchOption.AllDirectories))
                 .SelectMany(path => path.ToArray())
                 .Distinct();
             return files;
@@ -132,14 +139,17 @@ namespace Nancy.Pile
             var templates = files
                 .Select(file => new
                 {
-                    Name = file.Replace(rootPath, "").Replace('\\', '/'),
+                    Name =
+                        string.IsNullOrEmpty(rootPath)
+                            ? file.Replace('\\', '/')
+                            : file.Replace(rootPath, "").Replace('\\', '/'),
                     Template = Regex.Replace(File.ReadAllText(file), @"\r?\n", "\\n").Replace("'", "\\'")
                 })
                 .Select(nt => $"\t$templateCache.put('{nt.Name}','{nt.Template}');\n")
                 .Aggregate(new StringBuilder(), (a, b) => a.Append(b));
 
-            return 
-                "\n\nangular.module('nancy.pile.templates', [])" 
+            return
+                "\n\nangular.module('nancy.pile.templates', [])"
                 + $".run(['$templateCache',function ($templateCache){{\n{templates}}}]);";
         }
 
@@ -152,7 +162,7 @@ namespace Nancy.Pile
         private static string MinifyJavaScript(string text)
         {
             var minifier = new Minifier();
-            return minifier.MinifyJavaScript(text, new CodeSettings { PreserveImportantComments = false });
+            return minifier.MinifyJavaScript(text, new CodeSettings {PreserveImportantComments = false});
         }
 
         private static string ETag(byte[] bytes)
@@ -167,6 +177,12 @@ namespace Nancy.Pile
         {
             AssetBundle bundle;
             AssetBundles.TryRemove(hash, out bundle);
+        }
+
+        private class AssetBundle
+        {
+            public string ETag { get; set; }
+            public byte[] Bytes { get; set; }
         }
     }
 }
