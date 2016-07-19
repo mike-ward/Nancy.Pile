@@ -1,2 +1,2 @@
 ﻿angular.module('app.constants')
-  .constant('mystring', 'Hey!, I\'m a string1');
+  .constant('mystring', 'Hey!, I\'m a string');

@@ -50,19 +50,11 @@ namespace Nancy.Pile
                 .Where(file => file.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
                 .AsAngluarModule(applicationRootPath);
 
-            var minifiedPackage = Minify(string.Join("\n", nonHtmlFileContents + htmlFileContents), minificationType);
-            var bytes = Encoding.UTF8.GetBytes(minifiedPackage.Minified);
+            var contents = Minify(string.Join("\n", nonHtmlFileContents + htmlFileContents), minificationType);
+            var bytes = Encoding.UTF8.GetBytes(contents);
             var etag = ETag(bytes);
             var hash = etag.GetHashCode();
             AssetBundles.TryAdd(hash, new AssetBundle {ETag = etag, Bytes = bytes});
-
-            if (minifiedPackage.SourceMap != null)
-            {
-                var sourceMapBytes = Encoding.UTF8.GetBytes(minifiedPackage.SourceMap);
-                var etag2 = ETag(bytes);
-                var hash2 = etag.GetHashCode();
-                AssetBundles.TryAdd(hash2, new AssetBundle { ETag = etag2, Bytes = sourceMapBytes });
-            }
             return hash;
         }
 
@@ -80,11 +72,11 @@ namespace Nancy.Pile
             return text;
         }
 
-        private static MinifiedPackage Minify(string text, MinificationType minificationType)
+        private static string Minify(string text, MinificationType minificationType)
         {
             if (minificationType == MinificationType.StyleSheet) return MinifyStyleSheet(text);
             if (minificationType == MinificationType.JavaScript) return MinifyJavaScript(text);
-            return new MinifiedPackage { Minified = text };
+            return text;
         }
 
         private static Response ResponseNotModified()
@@ -161,27 +153,16 @@ namespace Nancy.Pile
                 + $".run(['$templateCache',function ($templateCache){{\n{templates}}}]);";
         }
 
-        private static MinifiedPackage MinifyStyleSheet(string text)
+        private static string MinifyStyleSheet(string text)
         {
             var minifier = new Minifier();
-            return new MinifiedPackage {Minified = minifier.MinifyStyleSheet(text)};
+            return minifier.MinifyStyleSheet(text);
         }
 
-        private static MinifiedPackage MinifyJavaScript(string text)
+        private static string MinifyJavaScript(string text)
         {
             var minifier = new Minifier();
-            var writer = new StringWriter();
-            var codeSettings = new CodeSettings
-            {
-                PreserveImportantComments = false,
-                SymbolsMap = new V3SourceMap(writer)
-            };
-            codeSettings.SymbolsMap.StartPackage("", "");
-            var minified = minifier.MinifyJavaScript(text, codeSettings);
-            codeSettings.SymbolsMap.EndPackage();
-            writer.Flush();
-            var sourceMap = writer.ToString();
-            return new MinifiedPackage {Minified = minified, SourceMap = sourceMap};
+            return minifier.MinifyJavaScript(text, new CodeSettings {PreserveImportantComments = false});
         }
 
         private static string ETag(byte[] bytes)
@@ -202,12 +183,6 @@ namespace Nancy.Pile
         {
             public string ETag { get; set; }
             public byte[] Bytes { get; set; }
-        }
-
-        private struct MinifiedPackage
-        {
-            public string Minified { get; set; }
-            public string SourceMap { get; set; }
         }
     }
 }

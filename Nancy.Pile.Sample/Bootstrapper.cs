@@ -19,13 +19,14 @@ namespace Nancy.Pile.Sample
                     "css/*.scss"
                 });
 
-            nancyConventions.StaticContentsConventions.ScriptBundle("scripts.js", true,
+            nancyConventions.StaticContentsConventions.ScriptBundle("scripts.js",
                 new[]
                 {
                     "js/third-party/*.js",
                     "!js/third-party/bomb.js",
                     "js/app/*.js",
                     "js/coffee/*.coffee",
+                    //"js/typescript/*.ts",
                     "js/app/templates/*.html"
                 });
         }
